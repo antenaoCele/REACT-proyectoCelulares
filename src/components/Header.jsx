@@ -29,9 +29,10 @@ function Header() {
         <AppBar position="static" color="default">
             <Toolbar>
                 <Typography
-                    variant="h6"
+                    variant="h1"
                     component="div"
-                    sx={{ flexGrow: 1, textAlign: "center" }}
+                    color="#FF3399"
+                    sx={{ flexGrow: 1, textAlign: "center", fontFamily: 'Poppins', fontWeight: 600 }}
                 >
                     celuStore
                 </Typography>
@@ -60,7 +61,7 @@ function Header() {
                                                 <TableCell>Nombre</TableCell>
                                                 <TableCell>Precio</TableCell>
                                                 <TableCell>Cantidad</TableCell>
-                                                <TableCell></TableCell>
+                                                <TableCell>Quitar</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -70,7 +71,7 @@ function Header() {
                                                         <img
                                                             src={`/public/img/${producto.image}.png`}
                                                             alt="Celular"
-                                                            style={{ width: "50px" }}
+                                                            style={{ width: "40px" }}
                                                         />
                                                     </TableCell>
                                                     <TableCell>{producto.modelo}</TableCell>
@@ -78,7 +79,6 @@ function Header() {
                                                     <TableCell>{producto.quantity}</TableCell>
                                                     <TableCell>
                                                         <Button
-                                                            size="small"
                                                             color="error"
                                                             onClick={() =>
                                                                 setCarrito(
@@ -96,13 +96,21 @@ function Header() {
                                 </TableContainer>
 
                                 <Typography variant="body1" sx={{ mt: 2 }}>
-                                    Total pagar: <strong>{carritoTotal()}</strong>
+                                    Total a pagar: <strong>{carritoTotal()}</strong>
                                 </Typography>
                                 <Button
                                     variant="contained"
-                                    color="primary"
                                     fullWidth
-                                    sx={{ mt: 1 }}
+                                    sx={{
+                                        fontFamily: 'sans-serif',
+                                        fontWeight: 600,
+                                        bgcolor: 'black',
+                                        color: 'white',
+                                        '&:hover': {
+                                            bgcolor: '#333',
+                                        }
+
+                                    }}
                                     onClick={() => setCarrito([])}
                                 >
                                     Vaciar Carrito
@@ -112,7 +120,7 @@ function Header() {
                     </Menu>
                 </Box>
             </Toolbar>
-        </AppBar>
+        </AppBar >
     );
 }
 

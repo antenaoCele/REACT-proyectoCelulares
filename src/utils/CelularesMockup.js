@@ -9,6 +9,7 @@ export const CelularesMockup = [
         sistemaOperativo: "Android",
         color: "Black",
         image: 'celular_1',
+        imagen: 'celular_11',
         disponible: true
     },
     {
@@ -21,6 +22,7 @@ export const CelularesMockup = [
         sistemaOperativo: "IOS",
         color: "Orange",
         image: 'celular_2',
+        imagen: 'celular_22',
         disponible: true
     },
     {
@@ -33,6 +35,7 @@ export const CelularesMockup = [
         sistemaOperativo: "IOS",
         color: "Pink",
         image: 'celular_3',
+        imagen: 'celular_33',
         disponible: true
     },
     {
@@ -45,6 +48,7 @@ export const CelularesMockup = [
         sistemaOperativo: "Android",
         color: "Skyblue",
         image: 'celular_4',
+        imagen: 'celular_44',
         disponible: true
     },
     {
@@ -57,6 +61,7 @@ export const CelularesMockup = [
         sistemaOperativo: "Android",
         color: "White",
         image: 'celular_5',
+        imagen: 'celular_55',
         disponible: true
     },
     {
@@ -69,6 +74,33 @@ export const CelularesMockup = [
         sistemaOperativo: "IOS",
         color: "Grey",
         image: 'celular_6',
+        imagen: 'celular_66',
+        disponible: true
+    },
+    {
+        id: 7,
+        modelo: "Galaxy s25",
+        marca: "Samsung",
+        precio: 1000,
+        almacenamiento: 256,
+        ram: 16,
+        sistemaOperativo: "Android",
+        color: "white",
+        image: 'celular_7',
+        imagen: 'celular_77',
+        disponible: true
+    },
+    {
+        id: 8,
+        modelo: "Iphone 13 pro",
+        marca: "Apple",
+        precio: 600,
+        almacenamiento: 128,
+        ram: 6,
+        sistemaOperativo: "IOS",
+        color: "Skyblue",
+        image: 'celular_8',
+        imagen: 'celular_88',
         disponible: true
     }
 ]
