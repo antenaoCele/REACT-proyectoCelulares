@@ -1,127 +1,112 @@
-import { useState } from "react";
-import {
-    AppBar,
-    Toolbar,
-    Typography,
-    IconButton,
-    Menu,
-    Box,
-    Button,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-} from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { useCarrito } from "../context/CarritoContext";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useCarrito } from '../context/CarritoContext';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import MenuIcon from '@mui/icons-material/Menu';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
-function Header() {
+export default function Header() {
+    const { isAuthenticated, logout } = useAuth();
+    const { carrito } = useCarrito();
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
-    const { carrito, carritoTotal, setCarrito } = useCarrito();
+    const open = Boolean(anchorEl);
 
-    const handleClick = (event) => setAnchorEl(event.currentTarget);
-    const handleClose = () => setAnchorEl(null);
+    const totalItems = carrito.reduce((acc, item) => acc + item.quantity, 0);
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        logout();
+        handleClose();
+        navigate('/');
+    };
 
     return (
-        <AppBar position="static" color="default">
-            <Toolbar>
-                <Typography
-                    variant="h1"
-                    component="div"
-                    color="#FF3399"
-                    sx={{ flexGrow: 1, textAlign: "center", fontFamily: 'Poppins', fontWeight: 600 }}
-                >
-                    celuStore
-                </Typography>
-
-                <Box>
-                    <IconButton color="inherit" onClick={handleClick}>
-                        <ShoppingCartIcon />
+        <AppBar
+            position="static"
+            sx={{
+                backgroundColor: 'white',
+                color: 'black',
+                boxShadow: 'none',
+                borderBottom: '1px solid #eee',
+            }}
+        >
+            <Toolbar
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    position: 'relative',
+                }}
+            >
+                {/* Izquierda: Carrito + Login */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <IconButton color="inherit" component={Link} to="/carrito">
+                        <Badge badgeContent={totalItems} color="error">
+                            <ShoppingCartIcon />
+                        </Badge>
                     </IconButton>
-                    <Menu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                        paperProps={{ style: { width: 350, padding: "20px" } }}
-                    >
-                        {carrito.length === 0 ? (
-                            <Typography variant="body1" gutterBottom>
-                                El carrito está vacío
-                            </Typography>
-                        ) : (
-                            <>
-                                <TableContainer component={Paper}>
-                                    <Table size="small">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Imagen</TableCell>
-                                                <TableCell>Nombre</TableCell>
-                                                <TableCell>Precio</TableCell>
-                                                <TableCell>Cantidad</TableCell>
-                                                <TableCell>Quitar</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {carrito.map((producto) => (
-                                                <TableRow key={producto.id}>
-                                                    <TableCell>
-                                                        <img
-                                                            src={`/public/img/${producto.image}.png`}
-                                                            alt="Celular"
-                                                            style={{ width: "40px" }}
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell>{producto.modelo}</TableCell>
-                                                    <TableCell>${producto.precio}</TableCell>
-                                                    <TableCell>{producto.quantity}</TableCell>
-                                                    <TableCell>
-                                                        <Button
-                                                            color="error"
-                                                            onClick={() =>
-                                                                setCarrito(
-                                                                    carrito.filter((c) => c.id !== producto.id)
-                                                                )
-                                                            }
-                                                        >
-                                                            X
-                                                        </Button>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
 
-                                <Typography variant="body1" sx={{ mt: 2 }}>
-                                    Total a pagar: <strong>{carritoTotal()}</strong>
-                                </Typography>
-                                <Button
-                                    variant="contained"
-                                    fullWidth
-                                    sx={{
-                                        fontFamily: 'sans-serif',
-                                        fontWeight: 600,
-                                        bgcolor: 'black',
-                                        color: 'white',
-                                        '&:hover': {
-                                            bgcolor: '#333',
-                                        }
-
-                                    }}
-                                    onClick={() => setCarrito([])}
-                                >
-                                    Vaciar Carrito
-                                </Button>
-                            </>
-                        )}
-                    </Menu>
+                    {isAuthenticated ? (
+                        <>
+                            <IconButton color="inherit" onClick={handleMenu}>
+                                <MenuIcon />
+                            </IconButton>
+                            <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                                <MenuItem component={Link} to="/clientes" onClick={handleClose}>
+                                    Clientes
+                                </MenuItem>
+                                <MenuItem component={Link} to="/vendedores" onClick={handleClose}>
+                                    Vendedores
+                                </MenuItem>
+                                <MenuItem component={Link} to="/registrar-venta" onClick={handleClose}>
+                                    Registrar Venta
+                                </MenuItem>
+                                <MenuItem onClick={handleLogout}>Cerrar Sesión</MenuItem>
+                            </Menu>
+                        </>
+                    ) : (
+                        <Button component={Link} to="/login" color="inherit">
+                            Login
+                        </Button>
+                    )}
                 </Box>
+
+                {/* Título centrado */}
+                <Typography
+                    variant="h3"
+                    component={Link}
+                    to="/"
+                    sx={{
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        color: '#FF3399',
+                        textDecoration: 'none',
+                        fontWeight: 'bold',
+                        fontSize: '5rem',
+                    }}
+                >
+                    CeluStore
+                </Typography>
             </Toolbar>
-        </AppBar >
+        </AppBar>
+
     );
 }
-
-export default Header;

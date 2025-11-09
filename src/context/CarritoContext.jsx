@@ -10,13 +10,26 @@ export function CarritoProvider({ children }) {
     function AgregarProducto(celular) {
         const existe = carrito.findIndex((producto) => producto.id === celular.id);
         if (existe >= 0) {
-            const copiaCarrito = [...carrito];
-            copiaCarrito[existe].quantity++;
-            setCarrito(copiaCarrito);
+            const nuevoCarrito = carrito.map((item, index) => {
+                if (index === existe) {
+                    return { ...item, quantity: item.quantity + 1 };
+                }
+                return item;
+            });
+            setCarrito(nuevoCarrito);
         } else {
-            celular.quantity = 1;
-            setCarrito([...carrito, celular]);
+            const nuevoProducto = { ...celular, quantity: 1 };
+            setCarrito([...carrito, nuevoProducto]);
         }
+    }
+
+    function EliminarProducto(celularId) {
+        const nuevoCarrito = carrito.filter(producto => producto.id !== celularId);
+        setCarrito(nuevoCarrito);
+    }
+
+    function LimpiarCarrito() {
+        setCarrito([]);
     }
 
     const carritoTotal = () =>
@@ -24,7 +37,7 @@ export function CarritoProvider({ children }) {
 
     return (
         <CarritoContext.Provider
-            value={{ celulares, carrito, AgregarProducto, carritoTotal, setCarrito }}
+            value={{ celulares, carrito, AgregarProducto, carritoTotal, setCarrito, EliminarProducto, LimpiarCarrito }}
         >
             {children}
         </CarritoContext.Provider>

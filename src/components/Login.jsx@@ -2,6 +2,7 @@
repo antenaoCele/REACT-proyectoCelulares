@@ -1,0 +1,86 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../apiConfig';
+
+export default function Login() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        // FastAPI con OAuth2 usualmente espera los datos como FormData
+        const formData = new URLSearchParams();
+        formData.append('username', email);
+        formData.append('password', password);
+
+        try {
+            const response = await fetch(`${API_URL}/token`, { // Asumiendo que tu endpoint de login es /token
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Email o contraseña incorrectos.');
+            }
+
+            const data = await response.json();
+            // Aquí podrías guardar el token (ej. data.access_token) si lo necesitas para futuras peticiones
+            login(); // Actualiza el estado de autenticación en el contexto
+            navigate('/'); // Redirige al inicio tras el login
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+
+    return (
+        <Container maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Typography component="h1" variant="h5">
+                    Iniciar Sesión
+                </Typography>
+                <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Correo Electrónico"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Contraseña"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                        Ingresar
+                    </Button>
+                </Box>
+            </Box>
+        </Container>
+    );
+}
