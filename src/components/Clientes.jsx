@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Container, Typography, Box, List, ListItem, ListItemText } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import { API_URL } from '../apiConfig';
 
 export default function Clientes() {
@@ -9,6 +10,7 @@ export default function Clientes() {
     const [telefono, setTelefono] = useState('');
     const [correo, setCorreo] = useState('');
     const [direccion, setDireccion] = useState('');
+    const [editingCliente, setEditingCliente] = useState(null); // Estado para el cliente en edición
 
     const fetchClientes = async () => {
         // En una aplicación real, la URL vendría de una variable de entorno
@@ -23,13 +25,24 @@ export default function Clientes() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const nuevoCliente = { nombre, apellido, telefono, correo, direccion };
+        const clienteData = { nombre, apellido, telefono, correo, direccion };
 
-        const response = await fetch(`${API_URL}/clientes/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(nuevoCliente),
-        });
+        let response;
+        if (editingCliente) {
+            // Actualizar cliente existente
+            response = await fetch(`${API_URL}/clientes/${editingCliente.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(clienteData),
+            });
+        } else {
+            // Agregar nuevo cliente
+            response = await fetch(`${API_URL}/clientes/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(clienteData),
+            });
+        }
 
         // Limpiar formulario y refrescar lista
         setNombre('');
@@ -37,12 +50,33 @@ export default function Clientes() {
         setTelefono('');
         setCorreo('');
         setDireccion('');
+        setEditingCliente(null); // Limpiar estado de edición
         fetchClientes();
         if (response.ok) {
-            alert('Cliente agregado exitosamente');
+            alert(editingCliente ? 'Cliente actualizado exitosamente' : 'Cliente agregado exitosamente');
         } else {
-            alert('Error al agregar el cliente');
+            alert(editingCliente ? 'Error al actualizar el cliente' : 'Error al agregar el cliente');
         }
+    };
+
+    const handleEdit = (cliente) => {
+        // Llenar el formulario con los datos del cliente seleccionado
+        setNombre(cliente.nombre);
+        setApellido(cliente.apellido);
+        setTelefono(cliente.telefono);
+        setCorreo(cliente.correo);
+        setDireccion(cliente.direccion);
+        setEditingCliente(cliente);
+    };
+
+    const handleCancelEdit = () => {
+        // Limpiar formulario y estado de edición
+        setNombre('');
+        setApellido('');
+        setTelefono('');
+        setCorreo('');
+        setDireccion('');
+        setEditingCliente(null);
     };
 
     return (
@@ -52,16 +86,23 @@ export default function Clientes() {
                     Gestión de Clientes
                 </Typography>
 
-                <Typography variant="h5" gutterBottom>Agregar Cliente</Typography>
+                <Typography variant="h5" gutterBottom>
+                    {editingCliente ? 'Actualizar Cliente' : 'Agregar Cliente'}
+                </Typography>
                 <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4 }}>
                     <TextField label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required fullWidth margin="normal" />
                     <TextField label="Apellido" value={apellido} onChange={(e) => setApellido(e.target.value)} required fullWidth margin="normal" />
                     <TextField label="Teléfono" value={telefono} onChange={(e) => setTelefono(e.target.value)} fullWidth margin="normal" />
                     <TextField label="Correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} fullWidth margin="normal" />
                     <TextField label="Dirección" value={direccion} onChange={(e) => setDireccion(e.target.value)} fullWidth margin="normal" />
-                    <Button type="submit" variant="contained" color="primary">
-                        Agregar Cliente
+                    <Button type="submit" variant="contained" color="primary" sx={{ mr: 2 }}>
+                        {editingCliente ? 'Actualizar Cliente' : 'Agregar Cliente'}
                     </Button>
+                    {editingCliente && (
+                        <Button variant="outlined" onClick={handleCancelEdit}>
+                            Cancelar
+                        </Button>
+                    )}
                 </Box>
 
                 <Typography variant="h5" gutterBottom>Listado de Clientes</Typography>
@@ -80,6 +121,11 @@ export default function Clientes() {
                                     </>
                                 }
                             />
+                            <ListItemSecondaryAction>
+                                <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(cliente)}>
+                                    <EditIcon />
+                                </IconButton>
+                            </ListItemSecondaryAction>
                         </ListItem>
                     ))}
                 </List>
