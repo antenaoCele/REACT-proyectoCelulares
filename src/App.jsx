@@ -6,31 +6,13 @@ import Login from "./components/Login";
 import Clientes from "./components/Clientes";
 import Vendedores from "./components/Vendedores";
 import AddVenta from "./components/AddVenta";
+import Reportes from "./components/Reportes";
 import Carrito from "./components/Carrito";
 import { CarritoProvider, useCarrito } from "./context/CarritoContext";
 import { AuthProvider } from "./context/AuthContext";
-import { useState, useEffect } from "react";
-
-
-
 
 function Catalogo() {
-
   const { celulares } = useCarrito();
-
-  // const [celulares, setCelulares] = useState([]);
-
-  const getCelulares = async () => {
-    const response = await fetch("http://localhost:8000/celulares");
-    const data = await response.json();
-    console.log("Celulares: ", data);
-    setCelulares(data);
-  };
-
-  useEffect(() => {
-    getCelulares();
-  }, []);
-
 
   return (
     <main>
@@ -56,6 +38,7 @@ function App() {
             <Route path="/clientes" element={<Clientes />} />
             <Route path="/vendedores" element={<Vendedores />} />
             <Route path="/registrar-venta" element={<AddVenta />} />
+            <Route path="/reportes" element={<Reportes />} />
             <Route path="/carrito" element={<Carrito />} />
           </Routes>
         </Router>

@@ -2,23 +2,42 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../apiConfig';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        // Aquí iría la lógica para autenticar contra el backend
-        console.log('Login attempt with:', { email, password });
+        setError('');
 
-        login(); // Actualiza el estado de autenticación
-        // Simulación de login exitoso
-        // En un caso real, recibirías un token y lo guardarías
-        alert('¡Inicio de sesión exitoso! (simulado)');
-        navigate('/'); // Redirige al inicio tras el login
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Email o contraseña incorrectos');
+            }
+
+            const vendedor = await response.json();
+
+            // Guardar info del vendedor y actualizar estado de autenticación
+            login(vendedor);
+
+            alert(`¡Bienvenido ${vendedor.nombre}!`);
+            navigate('/');
+        } catch (error) {
+            setError(error.message);
+            console.error('Error en login:', error);
+        }
     };
 
     return (
@@ -32,7 +51,7 @@ export default function Login() {
                 }}
             >
                 <Typography component="h1" variant="h5">
-                    Iniciar Sesión
+                    Iniciar Sesión - Vendedores
                 </Typography>
                 <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
                     <TextField
@@ -59,6 +78,11 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    {error && (
+                        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                            {error}
+                        </Typography>
+                    )}
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                         Ingresar
                     </Button>

@@ -8,12 +8,20 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [vendedor, setVendedor] = useState(null);
 
-    // Simula un login. En una app real, aquí llamarías a tu API.
-    const login = () => setIsAuthenticated(true);
-    const logout = () => setIsAuthenticated(false);
+    const login = (vendedorData) => {
+        setIsAuthenticated(true);
+        setVendedor(vendedorData);
+        // NO guardamos en localStorage para que la sesión no persista
+    };
 
-    const value = { isAuthenticated, login, logout };
+    const logout = () => {
+        setIsAuthenticated(false);
+        setVendedor(null);
+    };
+
+    const value = { isAuthenticated, vendedor, login, logout };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

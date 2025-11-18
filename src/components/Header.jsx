@@ -78,6 +78,9 @@ export default function Header() {
                                 <MenuItem component={Link} to="/registrar-venta" onClick={handleClose}>
                                     Registrar Venta
                                 </MenuItem>
+                                <MenuItem component={Link} to="/reportes" onClick={handleClose}>
+                                    Reportes
+                                </MenuItem>
                                 <MenuItem onClick={handleLogout}>Cerrar Sesión</MenuItem>
                             </Menu>
                         </>
@@ -107,6 +110,5 @@ export default function Header() {
                 </Typography>
             </Toolbar>
         </AppBar>
-
     );
 }
