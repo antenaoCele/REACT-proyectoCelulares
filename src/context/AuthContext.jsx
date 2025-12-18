@@ -13,7 +13,6 @@ export function AuthProvider({ children }) {
     const login = (vendedorData) => {
         setIsAuthenticated(true);
         setVendedor(vendedorData);
-        // NO guardamos en localStorage para que la sesión no persista
     };
 
     const logout = () => {

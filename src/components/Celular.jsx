@@ -32,7 +32,7 @@ export default function Celular({ celular }) {
         <>
             <div className="celular-card">
                 <Link to={`/celular/${celular.id}`}>
-                    <img src={`./public/img/${image}.png`} alt={`imagen ${modelo}`} />
+                    <img src={`/img/${image}.png`} alt={`imagen ${modelo}`} />
                     <Typography
                         variant="h6"
                         align="center"
