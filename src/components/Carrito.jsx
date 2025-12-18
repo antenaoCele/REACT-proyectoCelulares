@@ -64,7 +64,7 @@ export default function Carrito() {
                             <TableRow key={item.id}>
                                 <TableCell component="th" scope="row">
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Avatar src={`/public/img/${item.image}.png`} sx={{ mr: 2 }} variant="square" />
+                                        <Avatar src={`/img/${item.image}.png`} sx={{ mr: 2 }} variant="square" />
                                         {item.marca} {item.modelo}
                                     </Box>
                                 </TableCell>
