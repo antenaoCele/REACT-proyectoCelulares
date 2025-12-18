@@ -99,7 +99,7 @@ export default function DetalleCelular() {
                         to="/"
                         sx={{
                             position: "absolute",
-                            top: 35,
+                            top: 100,
                             left: 30,
                             border: "2px solid #e91e63",
                             color: "#e91e63",
