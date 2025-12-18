@@ -33,7 +33,7 @@ export default function DetalleCelular() {
                     >
                         <CardMedia
                             component="img"
-                            image={`/public/img/${celular.imagen}.png`}
+                            image={`/img/${celular.imagen}.png`}
                             alt={celular.modelo}
                             sx={{ width: "100%", maxWidth: 300, borderRadius: 2, mt: -12 }}
                         />
